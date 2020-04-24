@@ -5,7 +5,7 @@
 declare -a Package=("ansible" "wget" "git" "unzip" "zip" "curl")
 for val in $Package[@]; do 
     yum -y install $val
-donee
+done
 
 
 ansible-playbook --connection=local 127.0.0.1 main.yaml
