@@ -16,8 +16,8 @@ pipeline {
              }
             stage('TF Plan') {
                 steps {
-                sh 'terraform init'
-                sh 'terraform plan -out myplan'
+                sh 'cd terraform; terraform init'
+                sh 'cd terraform; terraform plan -out ../myplan'
             }
         }
         // stage('Approval') {
