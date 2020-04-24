@@ -168,57 +168,57 @@ resource "google_compute_attached_disk" "worker" {
     instance = "${google_compute_instance.worker.self_link}"
 }
 
-resource "google_compute_instance" "svcnode" {
-  name = "svcnode"
-  machine_type = "${var.machine_type}"
-  zone = "${"${var.region}"}-a"
+# resource "google_compute_instance" "svcnode" {
+#   name = "svcnode"
+#   machine_type = "${var.machine_type}"
+#   zone = "${"${var.region}"}-a"
 
 
-  boot_disk {
-      initialize_params {
-          image = "centos-cloud/centos-8"
-          size = "20"
-      }
-  }
+#   boot_disk {
+#       initialize_params {
+#           image = "centos-cloud/centos-8"
+#           size = "20"
+#       }
+#   }
 
-  network_interface {
-      network = "default"
+#   network_interface {
+#       network = "default"
 
-      access_config { 
-          // Ephemeral IP
-      }
-  }
+#       access_config { 
+#           // Ephemeral IP
+#       }
+#   }
 
-  service_account {
-      scopes = ["userinfo-email", "compute-ro", "storage-ro"]
-  }
+#   service_account {
+#       scopes = ["userinfo-email", "compute-ro", "storage-ro"]
+#   }
 
-  metadata = {
-    ssh-keys = "${var.username}:${file("${var.path}/gcp_compute_key.pub")}"
-  }
-  provisioner "remote-exec" {
-      inline = [
-          "sudo sed -ie 's/PermitRootLogin no/PermitRootLogin yes/g' /etc/ssh/sshd_config",
-          "sudo systemctl restart sshd"
-      ]
-      connection {
-          host        = self.network_interface[0].access_config[0].nat_ip
-          type = "ssh"
-          user = "${var.username}"
-          private_key = "${file("${var.path}/gcp_compute_key")}"
-          agent =   true
-      }
-  }
-}
+#   metadata = {
+#     ssh-keys = "${var.username}:${file("${var.path}/gcp_compute_key.pub")}"
+#   }
+#   provisioner "remote-exec" {
+#       inline = [
+#           "sudo sed -ie 's/PermitRootLogin no/PermitRootLogin yes/g' /etc/ssh/sshd_config",
+#           "sudo systemctl restart sshd"
+#       ]
+#       connection {
+#           host        = self.network_interface[0].access_config[0].nat_ip
+#           type = "ssh"
+#           user = "${var.username}"
+#           private_key = "${file("${var.path}/gcp_compute_key")}"
+#           agent =   true
+#       }
+#   }
+# }
 
-resource "google_compute_disk" "svcnode" {
-    name = "svcnode1"
-    type = "pd-ssd"
-    zone = "${"${var.region}"}-a"
-    size = "100"
-}
+# resource "google_compute_disk" "svcnode" {
+#     name = "svcnode1"
+#     type = "pd-ssd"
+#     zone = "${"${var.region}"}-a"
+#     size = "100"
+# }
 
-resource "google_compute_attached_disk" "svcnode" {
-    disk = "${google_compute_disk.svcnode.self_link}"
-    instance = "${google_compute_instance.svcnode.self_link}"
+# resource "google_compute_attached_disk" "svcnode" {
+#     disk = "${google_compute_disk.svcnode.self_link}"
+#     instance = "${google_compute_instance.svcnode.self_link}"
 }
