@@ -17,19 +17,19 @@ pipeline {
             stage('TF Plan') {
                 steps {
                 sh 'cd terraform; terraform init'
-                sh 'cd terraform; terraform plan -out ../myplan'
+                sh './plan.sh terraform'
             }
         }
-        stage('Approval') {
-                steps {
-                    script {
-                     def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
-                }
-            }
-        }
+        // stage('Approval') {
+        //         steps {
+        //             script {
+        //              def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
+        //         }
+        //     }
+        // }
         stage('TF Apply') {
                 steps {
-                    sh 'terraform apply myplan --auto-approve'
+                    sh './apply.sh terraform'
                     sh 'cp myplan ../gcp-destroy/'
                     sh 'cp terraform.tfstate* ../gcp-destroy/'
                     sh 'sleep 60'
