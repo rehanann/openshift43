@@ -4,14 +4,14 @@
   become_user: root
   tasks:
     - name: Install Bind packages
-      yum:
-        name ='{{ item }}' state = latest
-        loop:
+      dnf:
+        name:
           - bind
           - bind-utils
+        state: latest
     
     - name: Update Centos kernel
-      yum:
+      dnf:
         name: "*"
         state: latest
 
