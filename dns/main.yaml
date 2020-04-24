@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  become: yes
+  become_user: root
+  tasks:
+    - name: Install Bind packages
+      yum:
+        name ='{{ item }}' state = latest
+        loop:
+          - bind
+          - bind-utils
+    
+    - name: Update Centos kernel
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Make sure a bind is running 
+      systemd:
+        state: started
+        enabled: yes
+        name: named
